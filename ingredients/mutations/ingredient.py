@@ -37,7 +37,7 @@ class UpdateIngredient(graphene.Mutation):
 
     def mutate(self, cls, info, ingredient_data: UpdateIngredientModel):
         ingredient = Ingredient.objects.get(id=ingredient_data.id)
-        ingredient.name = str(ingredient.name)
-        ingredient.notes = str(ingredient.notes)
+        ingredient.name = str(ingredient_data.name)
+        ingredient.notes = str(ingredient_data.notes)
         ingredient.save()
         return UpdateIngredient(ingredient=ingredient)
