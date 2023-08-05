@@ -1,19 +1,7 @@
-from graphene import relay
+from graphene import InputObjectType, Int, String, relay
 from graphene_django import DjangoObjectType
 
 from ingredients.models import Category, Ingredient
-
-
-class CategoryType(DjangoObjectType):
-    class Meta:
-        model = Category
-        fields = fields = "__all__"  # ("id", "name", "ingredients")
-
-
-class IngredientType(DjangoObjectType):
-    class Meta:
-        model = Ingredient
-        fields = fields = "__all__"  # ("id", "name", "notes", "category")
 
 
 class CategoryNode(DjangoObjectType):
@@ -44,3 +32,12 @@ class CategoryConnection(relay.Connection):
 class IngredientConnection(relay.Connection):
     class Meta:
         node = IngredientNode
+
+
+class CreateIngredientModel(InputObjectType):
+    name = String(required=True)
+    notes = String(required=True)
+
+
+class UpdateIngredientModel(CreateIngredientModel):
+    id = Int(required=True)
