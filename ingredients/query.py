@@ -2,7 +2,6 @@ import graphene
 from graphene import relay
 from graphene_django.filter import DjangoFilterConnectionField
 
-from ingredients.models import Category, Ingredient
 from ingredients.serializers import (
     CategoryNode,
     IngredientNode,
