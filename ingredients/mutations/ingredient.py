@@ -1,6 +1,6 @@
 import graphene
-from ingredients.models import Ingredient
 
+from ingredients.models import Category, Ingredient
 from ingredients.serializers import (
     CreateIngredientModel,
     IngredientNode,
@@ -9,35 +9,33 @@ from ingredients.serializers import (
 
 
 class CreateIngredient(graphene.Mutation):
-    def __init__(self, ingredient=None):
-        self.ingredient = ingredient
-
     class Arguments:
         ingredient_data = graphene.Argument(CreateIngredientModel)
 
     ingredient = graphene.Field(IngredientNode)
 
-    def mutate(self, cls, info, ingredient_data: CreateIngredientModel):
-        ingredient = Ingredient(
+    def mutate(self, info, ingredient_data: CreateIngredientModel):
+        category_data = Category.objects.get(pk=ingredient_data.category_id)
+        i = Ingredient(
             name=ingredient_data.name,
             notes=ingredient_data.notes,
+            category=category_data,
         )
-        ingredient.save()
-        return CreateIngredient(ingredient=ingredient)
+        i.save()
+        return CreateIngredient(ingredient=i)
 
 
 class UpdateIngredient(graphene.Mutation):
-    def __init__(self, ingredient=None):
-        self.ingredient = ingredient
-
     class Arguments:
         ingredient_data = graphene.Argument(UpdateIngredientModel)
 
     ingredient = graphene.Field(IngredientNode)
 
-    def mutate(self, cls, info, ingredient_data: UpdateIngredientModel):
-        ingredient = Ingredient.objects.get(id=ingredient_data.id)
-        ingredient.name = str(ingredient_data.name)
-        ingredient.notes = str(ingredient_data.notes)
-        ingredient.save()
-        return UpdateIngredient(ingredient=ingredient)
+    def mutate(self, info, ingredient_data: UpdateIngredientModel):
+        category = Category.objects.get(id=ingredient_data.category_id)
+        i = Ingredient.objects.get(id=ingredient_data.id)
+        i.name = str(ingredient_data.name)
+        i.notes = str(ingredient_data.notes)
+        i.category = category
+        i.save()
+        return UpdateIngredient(ingredient=i)
